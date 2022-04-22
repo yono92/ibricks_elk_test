@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="3d5e5af2-5c9e-4203-b43d-3bfeace3c314" name="Default Changelist" comment="" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProjectId" id="285wHcUOt2doxgdiRPMnbP1pY9l" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="aspect.path.notification.shown" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="project.structure.last.edited" value="Project" />
+    <property name="project.structure.proportion" value="0.0" />
+    <property name="project.structure.side.proportion" value="0.0" />
+    <property name="settings.editor.selected.configurable" value="configurable.group.appearance" />
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="3d5e5af2-5c9e-4203-b43d-3bfeace3c314" name="Default Changelist" comment="" />
+      <created>1650519667487</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1650519667487</updated>
+      <workItem from="1650519670550" duration="2577000" />
+      <workItem from="1650590173916" duration="40000" />
+      <workItem from="1650590234685" duration="1000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="625" y="285" key="run.anything.popup" timestamp="1650522131676">
+      <screen x="0" y="25" width="1920" height="1175" />
+    </state>
+    <state x="625" y="285" key="run.anything.popup/0.25.1920.1175@0.25.1920.1175" timestamp="1650522131676" />
+    <state x="-1615" y="349" width="670" height="676" key="search.everywhere.popup" timestamp="1650520613072">
+      <screen x="-2560" y="25" width="2560" height="1415" />
+    </state>
+    <state x="-1615" y="349" width="670" height="676" key="search.everywhere.popup/-2560.25.2560.1415/-5120.25.2560.1415/0.25.1792.1095@-2560.25.2560.1415" timestamp="1650520613072" />
+  </component>
+</project>
