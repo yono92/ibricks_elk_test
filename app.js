@@ -22,6 +22,9 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use("/", indexRouter);
 app.use("/users", usersRouter);
 
+// pm2 패키지로 서버 구동 및 재개동
+// pm2 구동시 서버가 죽지 않게 끔
+
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
   next(createError(404));
@@ -43,4 +46,5 @@ app.listen(4040, function () {
 });
 
 app.use(json());
+
 module.exports = app;

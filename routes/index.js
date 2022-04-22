@@ -10,7 +10,7 @@ router.get("/", function (req, res, next) {
   res.render("index", { title: "Express" });
 });
 
-router.post("/search_text", async (req, res) => {
+router.post("/search_text_repoter", async (req, res) => {
   console.log(req.body.keyword);
   console.log(req.body.keyword2);
   const a = await elasticsearch.search({
@@ -66,6 +66,22 @@ router.post("/search_text_date", async (req, res) => {
     },
   });
   res.send(aa);
+});
+
+router.post("/search_text", async (req, res) => {
+  const q = req.body.word;
+  const aaa = await elasticsearch.search({
+    index: "practice",
+    body: {
+      query: {
+        match_phrase_prefix: {
+          content: q,
+        },
+      },
+      _source: ["content", "title", "reporter"],
+    },
+  });
+  res.send(aaa);
 });
 
 module.exports = router;
