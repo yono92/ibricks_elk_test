@@ -27,7 +27,7 @@
     ></script>
     <style>
       .datepicker {
-        margin-left: 600px;
+        margin-left: 200px;
         text-align: center;
         margin-top: 45px;
       }
@@ -69,10 +69,11 @@
           name="category"
           onchange="changecate()"
         >
-          <option value="content">본문</option>
-          <option value="giza">기자</option>
-          <option value="date">일자</option>
-          <option value="tot">본문+기자+내용</option>
+          <option value="content">본문 내용</option>
+          <option value="giza">기자별</option>
+          <option value="tite">제목별</option>
+          <option value="date">날짜기간별</option>
+          <option value="tot">날짜+기자+내용</option>
           <option value="hyung">형태소 분석</option>
         </select>
         <input
@@ -81,7 +82,12 @@
           id="reporter"
           style="display: none"
         />
-        <input placeholder="검색어를 입력해주세요" name="word" id="word" />
+        <input
+          placeholder="검색어를 입력해주세요"
+          name="word"
+          id="word"
+          style="width: 200px"
+        />
         <button type="submit" class="btn-primary" value="제출">제출</button>
       </form>
     </div>

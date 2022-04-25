@@ -51,6 +51,7 @@ router.post("/search_content", async (req, res) => {
           _source: ["reporter", "title", "content"],
         },
       });
+
       res.send(aa);
     } catch (error) {
       res.status(500).json({
@@ -96,6 +97,8 @@ router.post("/search_content", async (req, res) => {
     }
   } else if (category === "tot") {
     // 기간 내용 기자 검색
+    console.log(req.body.startdate);
+    console.log(req.body.findate);
     try {
       const aaaa = await elasticsearch.search({
         index: "practice",
@@ -137,17 +140,39 @@ router.post("/search_content", async (req, res) => {
     console.log("형태소분석 시작");
     // 간단한 형태소 분석 연습
     try {
-      const aaaaa = await elasticsearch.analyze({
+      const aaaaa = await elasticsearch.search({
         body: {
           query: {
-            tokenizer: nori_tokenizer,
-            "practice.nori": q,
+            totokenizer: ngram,
+            text: q,
             explain: "true",
           },
         },
       });
+      console.log(aaaaa);
       res.send(aaaaa);
       console.log("끝");
+    } catch (error) {
+      res.status(500).json({
+        message: "ELS 서버 에러",
+      });
+    }
+  } else if (category === "tite") {
+    console.log("제목별 검색");
+    console.log(q);
+    try {
+      const aaaaaa = await elasticsearch.search({
+        index: "practice",
+        body: {
+          query: {
+            match_phrase_prefix: {
+              title: q,
+            },
+          },
+          _source: ["reporter", "content", "start_dttm", "title"],
+        },
+      });
+      res.send(aaaaaa);
     } catch (error) {
       res.status(500).json({
         message: "ELS 서버 에러",
