@@ -36,7 +36,7 @@
   <body>
     <div class="container" style="text-align: center">
       <h1>한국 경제 검색</h1>
-      <form action="/search_text" method="post">
+      <form action="/search_content" method="post" name="many">
         <input
           type="text"
           id="date-picker"
@@ -45,8 +45,10 @@
           aria-label="Search"
           aria-describedby="basic-addon2"
           th:value="|${year}-${month}|"
-          style="width: 50px"
+          style="width: 50px; display: none"
+          placeholder="시작일"
         />
+
         <input
           type="text"
           id="date-picker2"
@@ -55,14 +57,31 @@
           aria-label="Search"
           aria-describedby="basic-addon2"
           th:value="|${year}-${month}|"
-          style="width: 50px"
+          style="width: 50px; display: none"
+          placeholder="종료일"
         />
-        <select class="form-select" aria-label="Default select example">
-          <option selected>검색 카테고리를 설정해주세요</option>
-          <option value="1">본문</option>
-          <option value="2">본문+기자</option>
+
+        <span id="dateappend"> </span>
+        <select
+          id="sel"
+          class="form-select"
+          aria-label="Default select example"
+          name="category"
+          onchange="changecate()"
+        >
+          <option value="content">본문</option>
+          <option value="giza">기자</option>
+          <option value="date">일자</option>
+          <option value="tot">본문+기자+내용</option>
+          <option value="hyung">형태소 분석</option>
         </select>
-        <input placeholder="검색어를 입력해주세요" name="word" />
+        <input
+          placeholder="기자명을 입력해주세요"
+          name="reporter"
+          id="reporter"
+          style="display: none"
+        />
+        <input placeholder="검색어를 입력해주세요" name="word" id="word" />
         <button type="submit" class="btn-primary" value="제출">제출</button>
       </form>
     </div>
@@ -95,6 +114,33 @@
             "/history?year=" + dateArr[0] + "&month=" + dateArr[1];
         });
       });
+    </script>
+    <script>
+      function changecate() {
+        let sel = document.getElementById("sel");
+        let selectValue = sel.options[sel.selectedIndex].value;
+        console.log(selectValue);
+
+        if (selectValue === "date") {
+          document.getElementById("date-picker").style.display = "";
+          document.getElementById("date-picker2").style.display = "";
+          document.getElementById("reporter").style.display = "none";
+          document.getElementById("word").placeholder = "검색어를 입력해주세요";
+        } else if (selectValue === "tot") {
+          document.getElementById("reporter").style.display = "";
+          document.getElementById("date-picker").style.display = "";
+          document.getElementById("date-picker2").style.display = "";
+          document.getElementById("word").placeholder = "검색어를 입력해주세요";
+        } else if (selectValue === "hyung") {
+          document.getElementById("word").placeholder =
+            "형태소 분석하실 문장을 입력해주세요 ";
+        } else {
+          document.getElementById("date-picker").style.display = "none";
+          document.getElementById("date-picker2").style.display = "none";
+          document.getElementById("reporter").style.display = "none";
+          document.getElementById("word").placeholder = "검색어를 입력해주세요";
+        }
+      }
     </script>
   </body>
 </html>
