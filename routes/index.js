@@ -19,17 +19,18 @@ router.post("/search_content", async (req, res) => {
   if (category === "content") {
     try {
       const a = await elasticsearch.search({
-        index: "practice",
+        index: "practice_ngram_nori",
         body: {
           query: {
-            match_phrase_prefix: {
-              content: q,
+            match: {
+              "content.nori": q,
             },
           },
           _source: ["content", "title", "reporter"],
         },
       });
-      res.send(a.hits.hits);
+      res.render("result", { data: a.hits.hits });
+      // res.send(a.hits.hits);
       console.log(a);
     } catch (error) {
       res.status(500).json({
@@ -41,7 +42,7 @@ router.post("/search_content", async (req, res) => {
     // 기자 이름으로 검색
     try {
       const aa = await elasticsearch.search({
-        index: "practice_ngram",
+        index: "practice_ngram_nori",
         body: {
           size: "100",
           query: {
@@ -52,7 +53,8 @@ router.post("/search_content", async (req, res) => {
           _source: ["reporter", "title", "content"],
         },
       });
-      res.send(aa.hits.hits);
+      // res.send(aa.hits.hits);
+      res.render("result", { data: aa.hits.hits });
     } catch (error) {
       res.status(500).json({
         message: "ELS 서버 에러",
@@ -65,14 +67,14 @@ router.post("/search_content", async (req, res) => {
     // 날짜 범위별 검색
     try {
       const aaa = await elasticsearch.search({
-        index: "practice_ngram",
+        index: "practice_ngram_nori",
         body: {
           query: {
             bool: {
               must: [
                 {
                   match: {
-                    "content.ngram": q,
+                    "content.nori": q,
                   },
                 },
                 {
@@ -89,7 +91,8 @@ router.post("/search_content", async (req, res) => {
           _source: ["reporter", "content", "start_dttm", "title"],
         },
       });
-      res.send(aaa.hits.hits);
+      // res.send(aaa.hits.hits);
+      res.render("result", { data: aaa.hits.hits });
     } catch (error) {
       res.status(500).json({
         message: "ELS 서버 에러",
@@ -130,7 +133,8 @@ router.post("/search_content", async (req, res) => {
           _source: ["reporter", "content", "start_dttm", "title"],
         },
       });
-      res.send(aaaa.hits.hits);
+      res.render("result", { data: aaaa.hits.hits });
+      // res.send(aaaa)
     } catch (error) {
       res.status(500).json({
         message: "ELS 서버 에러",
@@ -150,7 +154,8 @@ router.post("/search_content", async (req, res) => {
         },
       });
       console.log(aaaaa);
-      res.send(aaaaa);
+      res.render("result", { data: aaaaa.hits.hits });
+      // res.send(aaaaa);
       console.log("끝");
     } catch (error) {
       res.status(500).json({
@@ -162,17 +167,18 @@ router.post("/search_content", async (req, res) => {
     console.log(q);
     try {
       const aaaaaa = await elasticsearch.search({
-        index: "practice_ngram",
+        index: "practice_ngram_nori",
         body: {
           query: {
             match: {
-              "title.ngram": q,
+              "title.nori": q,
             },
           },
-          _source: ["reporter", "content", "start_dttm", "title"],
+          _source: ["reporter", "content", "title"],
         },
       });
-      res.send(aaaaaa);
+      // res.send(aaaaaa);
+      res.render("result", { data: aaaaaa.hits.hits });
     } catch (error) {
       res.status(500).json({
         message: "ELS 서버 에러",

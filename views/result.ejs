@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+</head>
+<body>
+    <% for(var i=0; i<data.length; i++){ %>
+    <h1><%=i+1%> 번기사</h1>
+    <h4>타이틀 : <%=data[i]._source.title%></h4>
+    <h4>기자 : <%=data[i]._source.reporter%></h4>
+    <h5>내용 : <%-data[i]._source.content%></h5>
+    <%}%> 
+</body>
+</html>
