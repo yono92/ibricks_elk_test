@@ -30,6 +30,7 @@ router.post("/search_content", async (req, res) => {
         },
       });
       res.send(a.hits.hits);
+      console.log(a);
     } catch (error) {
       res.status(500).json({
         message: "ELS 서버 에러",
@@ -40,19 +41,18 @@ router.post("/search_content", async (req, res) => {
     // 기자 이름으로 검색
     try {
       const aa = await elasticsearch.search({
-        index: "practice",
+        index: "practice_ngram",
         body: {
           size: "100",
           query: {
             match_phrase_prefix: {
-              reporter: q,
+              "reporter.ngram": q,
             },
           },
           _source: ["reporter", "title", "content"],
         },
       });
-
-      res.send(aa);
+      res.send(aa.hits.hits);
     } catch (error) {
       res.status(500).json({
         message: "ELS 서버 에러",
@@ -65,14 +65,14 @@ router.post("/search_content", async (req, res) => {
     // 날짜 범위별 검색
     try {
       const aaa = await elasticsearch.search({
-        index: "practice",
+        index: "practice_ngram",
         body: {
           query: {
             bool: {
               must: [
                 {
-                  match_phrase_prefix: {
-                    content: q,
+                  match: {
+                    "content.ngram": q,
                   },
                 },
                 {
@@ -101,7 +101,7 @@ router.post("/search_content", async (req, res) => {
     console.log(req.body.findate);
     try {
       const aaaa = await elasticsearch.search({
-        index: "practice",
+        index: "practice_ngram",
         body: {
           query: {
             bool: {
@@ -116,7 +116,7 @@ router.post("/search_content", async (req, res) => {
                 },
                 {
                   match_phrase_prefix: {
-                    reporter: req.body.reporter,
+                    "reporter.ngram": req.body.reporter,
                   },
                 },
                 {
@@ -162,11 +162,11 @@ router.post("/search_content", async (req, res) => {
     console.log(q);
     try {
       const aaaaaa = await elasticsearch.search({
-        index: "practice",
+        index: "practice_ngram",
         body: {
           query: {
-            match_phrase_prefix: {
-              title: q,
+            match: {
+              "title.ngram": q,
             },
           },
           _source: ["reporter", "content", "start_dttm", "title"],
