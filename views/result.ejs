@@ -2,13 +2,158 @@
 <html>
 <head>
     <link rel='stylesheet' href='/stylesheets/style.css' />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.12.4.min.js"></script>
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"
+      integrity="sha512-T/tUfKSV1bihCnd+MxKD0Hm1uBBroVYBOYSk1knyvQ9VyZJpc/ALb4P0r6ubwVPSGB2GvjeoMAJJImBG12TiaQ=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css"
+      integrity="sha512-mSYUmp1HYZDFaVKK//63EcZq4iFWFjxSL+Z3T/aCt4IO9Cejm03q3NKKYN6pFQzY0SBOr8h+eCIAZHPXcpZaNw=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/locales/bootstrap-datepicker.ko.min.js"
+      integrity="sha512-L4qpL1ZotXZLLe8Oo0ZyHrj/SweV7CieswUODAAPN/tnqN3PA1P+4qPu5vIryNor6HQ5o22NujIcAZIfyVXwbQ=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+    <style>
+      .datepicker {
+        margin-left: 400px;
+        text-align: center;
+        margin-top: 45px;
+      }
+    </style>
 </head>
 <body>
+    <div class="container" style="text-align: center">
+        <h1>한국 경제 검색</h1>
+        <form action="/search_content" method="post" name="many">
+          <input
+            type="text"
+            id="date-picker"
+            name="startdate"
+            class="form-control bg-white border-2 small"
+            aria-label="Search"
+            aria-describedby="basic-addon2"
+            th:value="|${year}-${month}|"
+            style="width: 50px; display: none"
+            placeholder="시작일"
+          />
+  
+          <input
+            type="text"
+            id="date-picker2"
+            name="findate"
+            class="form-control bg-white border-2 small"
+            aria-label="Search"
+            aria-describedby="basic-addon2"
+            th:value="|${year}-${month}|"
+            style="width: 50px; display: none"
+            placeholder="종료일"
+          />
+  
+          <span id="dateappend"> </span>
+          <select
+            id="sel"
+            class="form-select"
+            aria-label="Default select example"
+            name="category"
+            onchange="changecate()"
+          >
+            <option value="content">본문 내용</option>
+            <option value="giza">기자별</option>
+            <option value="tite">제목별</option>
+            <option value="date">날짜기간별</option>
+            <option value="tot">날짜+기자+내용</option>
+            <option value="hyung">형태소 분석</option>
+          </select>
+          <input
+            placeholder="기자명을 입력해주세요"
+            name="reporter"
+            id="reporter"
+            style="display: none"
+          />
+          <input
+            placeholder="검색어를 입력해주세요"
+            name="word"
+            id="word"
+            style="width: 200px"
+          />
+          <button type="submit" class="btn-primary" value="제출">제출</button>
+        </form>
+      </div>
     <% for(var i=0; i<data.length; i++){ %>
     <h1><%=i+1%> 번기사</h1>
     <h4>타이틀 : <%=data[i]._source.title%></h4>
     <h4>기자 : <%=data[i]._source.reporter%></h4>
     <h5>내용 : <%-data[i]._source.content%></h5>
     <%}%> 
+    <script>
+        $(document).ready(function () {
+          $("#date-picker").datepicker({
+            format: "yyyy-mm",
+            minViewMode: 1,
+            language: "ko",
+            autoclose: true,
+          });
+          $("#get-history").on("click", function () {
+            const dateArr = $("#date-picker").val().split("-");
+            location.href =
+              "/history?year=" + dateArr[0] + "&month=" + dateArr[1];
+          });
+        });
+      </script>
+      <script>
+        $(document).ready(function () {
+          $("#date-picker2").datepicker({
+            format: "yyyy-mm",
+            minViewMode: 1,
+            language: "ko",
+            autoclose: true,
+          });
+          $("#get-history").on("click", function () {
+            const dateArr = $("#date-picker").val().split("-");
+            location.href =
+              "/history?year=" + dateArr[0] + "&month=" + dateArr[1];
+          });
+        });
+      </script>
+      <script>
+        function changecate() {
+          let sel = document.getElementById("sel");
+          let selectValue = sel.options[sel.selectedIndex].value;
+          console.log(selectValue);
+  
+          if (selectValue === "date") {
+            document.getElementById("date-picker").style.display = "";
+            document.getElementById("date-picker2").style.display = "";
+            document.getElementById("reporter").style.display = "none";
+            document.getElementById("word").placeholder = "검색어를 입력해주세요";
+          } else if (selectValue === "tot") {
+            document.getElementById("reporter").style.display = "";
+            document.getElementById("date-picker").style.display = "";
+            document.getElementById("date-picker2").style.display = "";
+            document.getElementById("word").placeholder = "검색어를 입력해주세요";
+          } else if (selectValue === "hyung") {
+            document.getElementById("word").placeholder =
+              "형태소 분석하실 문장을 입력해주세요 ";
+            document.getElementById("date-picker").style.display = "none";
+            document.getElementById("date-picker2").style.display = "none";
+          } else {
+            document.getElementById("date-picker").style.display = "none";
+            document.getElementById("date-picker2").style.display = "none";
+            document.getElementById("reporter").style.display = "none";
+            document.getElementById("word").placeholder = "검색어를 입력해주세요";
+          }
+        }
+      </script>
 </body>
 </html>

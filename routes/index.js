@@ -22,13 +22,23 @@ router.post("/search_content", async (req, res) => {
         index: "practice_ngram_nori",
         body: {
           query: {
-            match: {
-              "content.nori": q,
+            multi_match: {
+              query: q,
+              fields: [
+                "content.nori",
+                "content.ngram",
+                "reporter.ngram",
+                "title.nori",
+                "title.ngram",
+              ],
             },
           },
           _source: ["content", "title", "reporter"],
         },
       });
+      console.log("하이라이트 = " + a.hits.hits[1].highlight);
+      let jsonstr = JSON.stringify(a.hits.hits[1].highlight);
+      console.log(jsonstr);
       res.render("result", { data: a.hits.hits });
       // res.send(a.hits.hits);
       console.log(a);
