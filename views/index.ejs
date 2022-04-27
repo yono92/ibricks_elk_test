@@ -36,7 +36,7 @@
   <body>
     <div class="container" style="text-align: center">
       <h1>한국 경제 검색</h1>
-      <form action="/search_content" method="post" name="many">
+      <form action="/search" method="post" name="many">
         <input
           type="text"
           id="date-picker"
@@ -91,6 +91,7 @@
         <button type="submit" class="btn-primary" value="제출">제출</button>
       </form>
     </div>
+
     <script>
       $(document).ready(function () {
         $("#date-picker").datepicker({

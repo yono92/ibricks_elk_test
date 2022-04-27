@@ -10,7 +10,7 @@ router.get("/", function (req, res, next) {
   res.render("index", { title: "Express" });
 });
 
-router.post("/search_content", async (req, res) => {
+router.post("/search", async (req, res) => {
   const q = req.body.word;
   console.log(q);
   let category = req.body.category;
@@ -21,6 +21,8 @@ router.post("/search_content", async (req, res) => {
       const a = await elasticsearch.search({
         index: "practice_ngram_nori",
         body: {
+          from: 0,
+          size: 10,
           query: {
             multi_match: {
               query: q,
@@ -36,10 +38,16 @@ router.post("/search_content", async (req, res) => {
           _source: ["content", "title", "reporter"],
         },
       });
-      console.log("하이라이트 = " + a.hits.hits[1].highlight);
-      let jsonstr = JSON.stringify(a.hits.hits[1].highlight);
+
       console.log(jsonstr);
-      res.render("result", { data: a.hits.hits });
+      let pageInfo = 0;
+      res.render("result", {
+        pageInfo: pageInfo,
+        data: a.hits.hits,
+        q: q,
+        category: category,
+        totaldata: a,
+      });
       // res.send(a.hits.hits);
       console.log(a);
     } catch (error) {
@@ -194,6 +202,39 @@ router.post("/search_content", async (req, res) => {
         message: "ELS 서버 에러",
       });
     }
+  }
+});
+
+router.get("/search", async (req, res) => {
+  let paramdata = req.query;
+  if (paramdata.category === "content") {
+    const a = await elasticsearch.search({
+      index: "practice_ngram_nori",
+      body: {
+        from: paramdata.pageInfo,
+        size: 10,
+        query: {
+          multi_match: {
+            query: paramdata.q,
+            fields: [
+              "content.nori",
+              "content.ngram",
+              "reporter.ngram",
+              "title.nori",
+              "title.ngram",
+            ],
+          },
+        },
+        _source: ["content", "title", "reporter"],
+      },
+    });
+    res.render("result", {
+      pageInfo: paramdata.pageInfo,
+      data: a.hits.hits,
+      totaldata: a,
+      category: paramdata.category,
+      q: paramdata.q,
+    });
   }
 });
 

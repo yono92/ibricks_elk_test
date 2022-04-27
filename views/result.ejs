@@ -35,7 +35,7 @@
 <body>
     <div class="container" style="text-align: center">
         <h1>한국 경제 검색</h1>
-        <form action="/search_content" method="post" name="many">
+        <form action="/search" method="post" name="many">
           <input
             type="text"
             id="date-picker"
@@ -90,12 +90,47 @@
           <button type="submit" class="btn-primary" value="제출">제출</button>
         </form>
       </div>
+      <div>
     <% for(var i=0; i<data.length; i++){ %>
     <h1><%=i+1%> 번기사</h1>
     <h4>타이틀 : <%=data[i]._source.title%></h4>
     <h4>기자 : <%=data[i]._source.reporter%></h4>
     <h5>내용 : <%-data[i]._source.content%></h5>
     <%}%> 
+      </div>
+
+      <div>
+        <a
+          href="http://localhost:3000/search?pageInfo=<%=pageInfo-10%>&category=<%=category%>&q=<%=q%>"
+        >
+          [<<]
+        </a>
+        <% if(pageInfo==0){%> <%}else{%>
+        <a
+          href="http://localhost:3000/search?pageInfo=<%=pageInfo-10%>&category=<%=category%>&q=<%=q%>"
+        >
+          [<]
+        </a>
+        <%}%> <% let v = totaldata.hits.total.value/10%> <% let v2 =
+        totaldata.hits.total.value%10%> <% for(var i=0; i < v; i++){%>
+        <a
+          href="http://localhost:3000/search?pageInfo=<%= i*10 %>&category=<%=category%>&q=<%=q%>"
+          ><%= i+1 %></a
+        >
+        <%}%> <% let v1 = Math.floor(v)%> <% if(pageInfo==v1*10-10 && v2==0){%>
+        <%}else if(pageInfo==v1*10 && v2!==0){ %> <%}else{%>
+        <a
+          href="http://localhost:3000/search?pageInfo=<%=Number(pageInfo)+Number(10)%>&category=<%=category%>&q=<%=q%>"
+        >
+          [>]
+        </a>
+        <%}%>
+        <a
+          href="http://localhost:3000/search?pageInfo=<%=pageInfo-10%>&category=<%=category%>&q=<%=q%>"
+        >
+          [>>]
+        </a>
+      </div>
     <script>
         $(document).ready(function () {
           $("#date-picker").datepicker({
