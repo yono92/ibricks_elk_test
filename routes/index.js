@@ -1,5 +1,6 @@
 const express = require("express");
 const req = require("express/lib/request");
+const { json } = require("express/lib/response");
 const res = require("express/lib/response");
 let router = express.Router();
 
@@ -11,139 +12,81 @@ router.get("/", function (req, res, next) {
 });
 
 router.post("/search", async (req, res) => {
-  let q = req.body.word;
-  let sd = req.body.startdate;
-  let fd = req.body.findate;
+  // 바디에서 받은 검색어
+  const q = req.body.word;
+  //바디에서 받은 시작일
+  // const sd = req.body.startdate;
+  //바디에서 받은 종료일
+  // const fd = req.body.findate;
+  // 검색어 로그
   console.log(q);
-  console.log(sd);
-  console.log(fd);
-  console.log("통합검색");
-  // 통합 검색 쿼리
-  if (q != null && sd === "null" && fd === "null") {
-    console.log("통합 검색");
-    try {
-      const a = await elasticsearch.search({
-        index: "practice_ngram_nori",
-        body: {
-          size: 10,
-          from: 0,
-          query: {
-            multi_match: {
-              query: q,
-              fields: [
-                "reporter.ngram",
-                "title.ngram",
-                "title.nori",
-                "content.ngram",
-                "content.nori",
-              ],
-            },
+  // console.log(sd);
+  // console.log(fd);
+  // 통합 검색 시작
+  console.log("통합 검색");
+  try {
+    const a = await elasticsearch.search({
+      index: "practice_ngram_nori",
+      body: {
+        size: 10,
+        from: 0,
+        query: {
+          multi_match: {
+            query: q,
+            fields: [
+              "content.ngram",
+              "content.nori",
+              "title.ngram",
+              "title.nori",
+              "reporter.ngram",
+            ],
           },
-          _source: ["content", "reporter", "title", "start_dttm"],
         },
-      });
-      let pageInfo = 0;
-      res.render("result", {
-        pageInfo: pageInfo,
-        data: a.hits.hits,
-        q: q,
-        totaldata: a,
-      });
-      console.log(a);
-    } catch (error) {
-      res.render("error");
-    }
+        _source: ["reporter", "content", "title", "start_dttm"],
+      },
+    });
+    console.log(a);
+    console.log(a.hits.hits);
+    let pageInfo = 0;
+    res.render("result", {
+      pageInfo: pageInfo,
+      data: a.hits.hits,
+      q: q,
+      totaldata: a,
+    });
+  } catch (error) {
+    res.render("error");
   }
-
-  // if (q !== null && sd !== null && fd !== null) {
-  //   console.log("날짜조건 검색");
-  //   try {
-  //     const aa = await elasticsearch.search({
-  //       index: "practice_ngram_nori",
-  //       body: {
-  //         size: 10,
-  //         from: 0,
-  //         query: {
-  //           bool: {
-  //             must: [
-  //               {
-  //                 multi_match: {
-  //                   query: q,
-  //                   fields: [
-  //                     "content.ngram",
-  //                     "content.nori",
-  //                     "title.ngram",
-  //                     "title.nori",
-  //                     "reporter.ngram",
-  //                   ],
-  //                 },
-  //               },
-  //               {
-  //                 range: {
-  //                   start_dttm: {
-  //                     gte: sd,
-  //                     lte: fd,
-  //                   },
-  //                 },
-  //               },
-  //             ],
-  //           },
-  //         },
-  //       },
-  //       _source: ["content", "title", "start_dttm", "reporter"],
-  //     });
-  //     let pageInfo = 0;
-  //     res.render("result", {
-  //       pageInfo: pageInfo,
-  //       data: aa.hits.hits,
-  //       q: q,
-  //       totaldata: a,
-  //       sd: sd,
-  //       fd: fd,
-  //     });
-  //   } catch (error) {
-  //     console.log("캐치에서 빠짐");
-  //     res.render("error");
-  //   }
-  // } else {
-  //   console.log("엘스에서 빠짐");
-  //   res.render("error");
-  // }
 });
 
 router.get("/search", async (req, res) => {
   let paramdata = req.query;
-  if (paramdata.category === "content") {
-    const a = await elasticsearch.search({
-      index: "practice_ngram_nori",
-      body: {
-        from: paramdata.pageInfo,
-        size: 10,
-        query: {
-          multi_match: {
-            query: paramdata.q,
-            fields: [
-              "content.nori",
-              "content.ngram",
-              "reporter.ngram",
-              "title.nori",
-              "title.ngram",
-            ],
-          },
+  const aa = await elasticsearch.search({
+    index: "practice_ngram_nori",
+    body: {
+      from: paramdata.pageInfo,
+      size: 10,
+      query: {
+        multi_match: {
+          query: paramdata.q,
+          fields: [
+            "content.nori",
+            "content.ngram",
+            "reporter.ngram",
+            "title.nori",
+            "title.ngram",
+          ],
         },
-        _source: ["content", "title", "reporter"],
       },
-    });
-    res.render("result", {
-      pageInfo: paramdata.pageInfo,
-      data: a.hits.hits,
-      totaldata: a,
-      category: paramdata.category,
-      q: paramdata.q,
-    });
-  } else {
-    res.render("error");
-  }
+      _source: ["content", "title", "reporter", "start_dttm"],
+    },
+  });
+  res.render("result", {
+    pageInfo: paramdata.pageInfo,
+    data: aa.hits.hits,
+    totaldata: aa,
+    q: paramdata.q,
+  });
 });
 
 module.exports = router;

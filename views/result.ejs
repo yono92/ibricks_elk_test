@@ -27,11 +27,10 @@
       crossorigin="anonymous"
       referrerpolicy="no-referrer"
     ></script>
-    <title><%= title %></title>
     <link rel="stylesheet" href="/stylesheets/style.css" />
   </head>
 <body>
-  <section>
+<section>
     <div class="container" style="text-align: center">
       <h1>한국 경제 검색</h1>
       <form action="/search" method="post">
@@ -46,6 +45,7 @@
             border-radius: 3px;
             box-sizing: border-box;
           "
+          value="<%=q%>"
         />
         <button class="btn btn-primary" type="submit" value="검색">
           검색
@@ -73,7 +73,7 @@
             <h6>기간별 조회</h6>
             <div style="text-align: center; margin: auto">
               <input
-                type="text"
+
                 id="date-picker"
                 name="startdate"
                 class="form-control bg-white border-2 small"
@@ -84,7 +84,6 @@
                 placeholder="시작일"
               />
               <input
-                type="text"
                 id="date-picker2"
                 name="findate"
                 class="form-control bg-white border-2 small"
@@ -102,13 +101,16 @@
     </div>
   </section>
   <hr>
+  <div class="container">
     <% for(var i=0; i<data.length; i++){ %>
-    <h1><%=i+1%> 번기사</h1>
-    <h2>타이틀 : <%=data[i]._source.title%></h2>
-    <h2>기자 : <%=data[i]._source.reporter%></h2>
-    <h5>내용 : <%=data[i]._source.content%></h5>
-    <h6>날짜 : <%=data[i]._source.start_dttm%></h6>
 
+    <div><%=i+1%> 번기사</div>
+    <hr>
+    <h3>타이틀 : <%=data[i]._source.title%></h3>
+    <h6>기자 : <%=data[i]._source.reporter%></h6>
+    <div>내용 : <%=data[i]._source.content%></div>
+    <div>날짜 : <%=data[i]._source.start_dttm%> </div>
+    <br>
     <%}%> 
       </div>
 
@@ -149,6 +151,7 @@
           [>>]
         </a>
       </div>
+
       <script>
         $(document).ready(function () {
           $("#date-picker").datepicker({
