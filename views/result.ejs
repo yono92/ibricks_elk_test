@@ -1,9 +1,12 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <link rel='stylesheet' href='/stylesheets/style.css' />
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.12.4.min.js"></script>
+  <head>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3"
+      crossorigin="anonymous"
+    />
     <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
     <script
       src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"
@@ -24,114 +27,129 @@
       crossorigin="anonymous"
       referrerpolicy="no-referrer"
     ></script>
-    <style>
-      .datepicker {
-        margin-left: 400px;
-        text-align: center;
-        margin-top: 45px;
-      }
-    </style>
-</head>
+    <title><%= title %></title>
+    <link rel="stylesheet" href="/stylesheets/style.css" />
+  </head>
 <body>
+  <section>
     <div class="container" style="text-align: center">
-        <h1>한국 경제 검색</h1>
-        <form action="/search" method="post" name="many">
-          <input
-            type="text"
-            id="date-picker"
-            name="startdate"
-            class="form-control bg-white border-2 small"
-            aria-label="Search"
-            aria-describedby="basic-addon2"
-            th:value="|${year}-${month}|"
-            style="width: 50px; display: none"
-            placeholder="시작일"
-          />
-  
-          <input
-            type="text"
-            id="date-picker2"
-            name="findate"
-            class="form-control bg-white border-2 small"
-            aria-label="Search"
-            aria-describedby="basic-addon2"
-            th:value="|${year}-${month}|"
-            style="width: 50px; display: none"
-            placeholder="종료일"
-          />
-  
-          <span id="dateappend"> </span>
-          <select
-            id="sel"
-            class="form-select"
-            aria-label="Default select example"
-            name="category"
-            onchange="changecate()"
+      <h1>한국 경제 검색</h1>
+      <form action="/search" method="post">
+        <input
+          placeholder="검색어를 입력해주세요"
+          name="word"
+          id="word"
+          style="
+            width: 300px;
+            height: 42px;
+            margin-top: 20px;
+            border-radius: 3px;
+            box-sizing: border-box;
+          "
+        />
+        <button class="btn btn-primary" type="submit" value="검색">
+          검색
+        </button>
+        <button
+          class="btn btn-outline-primary"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#detailsearch"
+          aria-expanded="false"
+          aria-controls="detailsearch"
+        >
+          상세검색
+        </button>
+        <div class="collapse" id="detailsearch" style="text-align: center;margin-left: 100px;">
+          <div
+            class="card card-body"
+            style="
+              margin-top: 30px;
+              width: 400px;
+              margin-left: 400px;
+              text-align: center;
+            "
           >
-            <option value="content">본문 내용</option>
-            <option value="giza">기자별</option>
-            <option value="tite">제목별</option>
-            <option value="date">날짜기간별</option>
-            <option value="tot">날짜+기자+내용</option>
-            <option value="hyung">형태소 분석</option>
-          </select>
-          <input
-            placeholder="기자명을 입력해주세요"
-            name="reporter"
-            id="reporter"
-            style="display: none"
-          />
-          <input
-            placeholder="검색어를 입력해주세요"
-            name="word"
-            id="word"
-            style="width: 200px"
-          />
-          <button type="submit" class="btn-primary" value="제출">제출</button>
-        </form>
-      </div>
-      <div>
+            <h6>기간별 조회</h6>
+            <div style="text-align: center; margin: auto">
+              <input
+                type="text"
+                id="date-picker"
+                name="startdate"
+                class="form-control bg-white border-2 small"
+                aria-label="Search"
+                aria-describedby="basic-addon2"
+                th:value="|${year}-${month}|"
+                style="width: 100px"
+                placeholder="시작일"
+              />
+              <input
+                type="text"
+                id="date-picker2"
+                name="findate"
+                class="form-control bg-white border-2 small"
+                aria-label="Search"
+                aria-describedby="basic-addon2"
+                th:value="|${year}-${month}|"
+                style="width: 100px"
+                placeholder="종료일"
+              />
+              <span id="dateappend"> </span>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </section>
+  <hr>
     <% for(var i=0; i<data.length; i++){ %>
     <h1><%=i+1%> 번기사</h1>
-    <h4>타이틀 : <%=data[i]._source.title%></h4>
-    <h4>기자 : <%=data[i]._source.reporter%></h4>
-    <h5>내용 : <%-data[i]._source.content%></h5>
+    <h2>타이틀 : <%=data[i]._source.title%></h2>
+    <h2>기자 : <%=data[i]._source.reporter%></h2>
+    <h5>내용 : <%=data[i]._source.content%></h5>
+    <h6>날짜 : <%=data[i]._source.start_dttm%></h6>
+
     <%}%> 
       </div>
 
       <div>
+        <!-- <% let pageInfo=0 %> -->
         <a
-          href="http://localhost:3000/search?pageInfo=<%=pageInfo-10%>&category=<%=category%>&q=<%=q%>"
+          href="http://localhost:3000/search?pageInfo=<%=pageInfo-1%>&q=<%=q%>"
         >
           [<<]
         </a>
-        <% if(pageInfo==0){%> <%}else{%>
+        <% if(pageInfo==1){%> <%}else{%>
         <a
-          href="http://localhost:3000/search?pageInfo=<%=pageInfo-10%>&category=<%=category%>&q=<%=q%>"
+          href="http://localhost:3000/search?pageInfo=<%=pageInfo-1%>&q=<%=q%>"
         >
           [<]
         </a>
-        <%}%> <% let v = totaldata.hits.total.value/10%> <% let v2 =
-        totaldata.hits.total.value%10%> <% for(var i=0; i < v; i++){%>
+        <%}%> 
+        <% let v = totaldata.hits.total.value/10%> 
+        <% let v2 =totaldata.hits.total.value%10%> 
+        <% for(var i=0; i < v; i++){%>
         <a
-          href="http://localhost:3000/search?pageInfo=<%= i*10 %>&category=<%=category%>&q=<%=q%>"
+          href="http://localhost:3000/search?pageInfo=<%= i+1 %>&q=<%=q%>"
           ><%= i+1 %></a
         >
-        <%}%> <% let v1 = Math.floor(v)%> <% if(pageInfo==v1*10-10 && v2==0){%>
-        <%}else if(pageInfo==v1*10 && v2!==0){ %> <%}else{%>
+        <%}%> <% let v1 = Math.floor(v)%> 
+        <% if(pageInfo==v1*10-10 && v2==0){%>
+        <%}else if(pageInfo==v1*10 && v2!==0){ %> 
+          <%}else{%>
         <a
-          href="http://localhost:3000/search?pageInfo=<%=Number(pageInfo)+Number(10)%>&category=<%=category%>&q=<%=q%>"
+          href="http://localhost:3000/search?pageInfo=<%=Number(pageInfo)+Number(1)%>&q=<%=q%>"
         >
           [>]
         </a>
         <%}%>
         <a
-          href="http://localhost:3000/search?pageInfo=<%=pageInfo-10%>&category=<%=category%>&q=<%=q%>"
+          href="http://localhost:3000/search?pageInfo=<%=pageInfo-1%>&q=<%=q%>"
         >
           [>>]
         </a>
       </div>
-    <script>
+      <script>
         $(document).ready(function () {
           $("#date-picker").datepicker({
             format: "yyyy-mm",
@@ -161,34 +179,10 @@
           });
         });
       </script>
-      <script>
-        function changecate() {
-          let sel = document.getElementById("sel");
-          let selectValue = sel.options[sel.selectedIndex].value;
-          console.log(selectValue);
-  
-          if (selectValue === "date") {
-            document.getElementById("date-picker").style.display = "";
-            document.getElementById("date-picker2").style.display = "";
-            document.getElementById("reporter").style.display = "none";
-            document.getElementById("word").placeholder = "검색어를 입력해주세요";
-          } else if (selectValue === "tot") {
-            document.getElementById("reporter").style.display = "";
-            document.getElementById("date-picker").style.display = "";
-            document.getElementById("date-picker2").style.display = "";
-            document.getElementById("word").placeholder = "검색어를 입력해주세요";
-          } else if (selectValue === "hyung") {
-            document.getElementById("word").placeholder =
-              "형태소 분석하실 문장을 입력해주세요 ";
-            document.getElementById("date-picker").style.display = "none";
-            document.getElementById("date-picker2").style.display = "none";
-          } else {
-            document.getElementById("date-picker").style.display = "none";
-            document.getElementById("date-picker2").style.display = "none";
-            document.getElementById("reporter").style.display = "none";
-            document.getElementById("word").placeholder = "검색어를 입력해주세요";
-          }
-        }
-      </script>
+      <script
+        src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+        crossorigin="anonymous"
+      ></script>
 </body>
 </html>
