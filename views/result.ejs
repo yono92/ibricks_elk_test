@@ -27,29 +27,44 @@
       crossorigin="anonymous"
       referrerpolicy="no-referrer"
     ></script>
-    <link rel="stylesheet" href="/stylesheets/style.css" />
+    <style>
+      @font-face {
+        font-family: "ChosunGs";
+        src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_20-04@1.0/ChosunGs.woff")
+          format("woff");
+        font-weight: normal;
+        font-style: normal;
+      }
+    </style>
   </head>
-<body>
-<section>
-    <div class="container" style="text-align: center">
-      <h1>한국 경제 검색</h1>
-      <form action="/search" method="post">
-        <input
-          placeholder="검색어를 입력해주세요"
-          name="word"
-          id="word"
-          style="
-            width: 300px;
-            height: 42px;
-            margin-top: 20px;
-            border-radius: 3px;
-            box-sizing: border-box;
-          "
-          value="<%=q%>"
-        />
-        <button class="btn btn-primary" type="submit" value="검색">
-          검색
-        </button>
+  <body>
+    <section>
+      <div class="container" style="text-align: center">
+        <h1 style="font-family:ChosunGs ;">한국 경제 검색</h1>
+        <form action="/search" method="post">
+          <input
+            placeholder="검색어를 입력해주세요"
+            name="word"
+            id="word"
+            style="
+              width: 300px;
+              height: 42px;
+              margin-top: 20px;
+              border-radius: 3px;
+              box-sizing: border-box;
+            "
+            value="<%=q%>"
+          />
+          <button class="btn btn-primary" type="submit" value="검색" >
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+              <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+            </svg>
+          </button>
+        </form>
+      </div>
+    </section>
+    <section>
+      <div class="container" style="text-align: center; margin-top: 20px">
         <button
           class="btn btn-outline-primary"
           type="button"
@@ -57,10 +72,16 @@
           data-bs-target="#detailsearch"
           aria-expanded="false"
           aria-controls="detailsearch"
+          style="width: 350px"
         >
           상세검색
         </button>
-        <div class="collapse" id="detailsearch" style="text-align: center;margin-left: 100px;">
+      
+        <div
+          class="collapse"
+          id="detailsearch"
+          style="text-align: center; margin-left: 50px"
+        >
           <div
             class="card card-body"
             style="
@@ -71,36 +92,53 @@
             "
           >
             <h6>기간별 조회</h6>
-            <div style="text-align: center; margin: auto">
+            <div class="container" style="text-align: center; margin: auto">
               <input
-
-                id="date-picker"
+                id="startdate"
                 name="startdate"
                 class="form-control bg-white border-2 small"
                 aria-label="Search"
                 aria-describedby="basic-addon2"
                 th:value="|${year}-${month}|"
-                style="width: 100px"
+                style="width: 100px; margin: auto"
                 placeholder="시작일"
+                value="<%=startdate%>"
               />
               <input
-                id="date-picker2"
+                id="findate"
                 name="findate"
                 class="form-control bg-white border-2 small"
                 aria-label="Search"
                 aria-describedby="basic-addon2"
                 th:value="|${year}-${month}|"
-                style="width: 100px"
+                style="width: 100px; margin: auto"
                 placeholder="종료일"
+                value="<%=findate%>"
               />
+              <button
+                type="button"
+                class="btn btn-outline-primary"
+                onclick="datepick();"
+                style="margin-top: auto; margin-top: 10px"
+              >
+                기간적용
+              </button>
+              <select
+                class="container selectpicker"
+                id="selectbox"
+                name="sort_data"
+                onchange="chageLangSelect()"
+              >
+                <option value="desc">최신순</option>
+                <option value="asc">과거순</option>
+              </select>
               <span id="dateappend"> </span>
             </div>
           </div>
         </div>
-      </form>
-    </div>
-  </section>
-  <hr>
+
+      </div>
+
   <div class="container">
     <% for(var i=0; i<data.length; i++){ %>
 
@@ -109,83 +147,117 @@
     <h3>타이틀 : <%=data[i]._source.title%></h3>
     <h6>기자 : <%=data[i]._source.reporter%></h6>
     <div>내용 : <%=data[i]._source.content%></div>
+    <br>
     <div>날짜 : <%=data[i]._source.start_dttm%> </div>
     <br>
     <%}%> 
       </div>
+    </section>
+    <hr />
+    <br />
+    <section style="margin: auto; text-align: center">
+      <a
+        href="http://localhost:3000/search?pageInfo=1&q=<%=q%>&sort_data=<%=sort_data%>&startdate=<%=startdate%>&findate=<%=findate%>"
+      class="btn btn-default">
+        [<<]
+      </a>
+      <% if(pageInfo==1){%> <%}else{%>
+      <a
+        href="http://localhost:3000/search?pageInfo=<%=pageInfo-1%>&q=<%=q%>&sort_data=<%=sort_data%>&startdate=<%=startdate%>&findate=<%=findate%>"
+        class="btn btn-default">
+        [<]
+      </a>
+      <%}%> <% let v = totaldata.hits.total.value/10%> <% let v2 =
+      totaldata.hits.total.value%10%> <% for(var i=0; i < v; i++){ %>
+      <a
+        href="http://localhost:3000/search?pageInfo=<%= i+1 %>&q=<%=q%>&sort_data=<%=sort_data%>&startdate=<%=startdate%>&findate=<%=findate%>"
+        class="btn btn-default"><%= i+1 %></a
+        >
+      <%}%> <% let v1 = Math.floor(v)%> <% if(pageInfo==v1*1 && v2==0){%>
+      <%}else if(pageInfo==v1*1+1 && v2!==0){ %> <%}else{%>
+      <a
+        href="http://localhost:3000/search?pageInfo=<%=Number(pageInfo)+Number(1)%>&q=<%=q%>&sort_data=<%=sort_data%>&startdate=<%=startdate%>&findate=<%=findate%>"
+        class="btn btn-default">
+        [>]
+      </a>
+      <%}%>
+      <a
+        href="http://localhost:3000/search?pageInfo=<%=pageInfo-1%>&q=<%=q%>&sort_data=<%=sort_data%>&startdate=<%=startdate%>&findate=<%=findate%>"
+        class="btn btn-default">
+        [>>]
+      </a>
+    </section>
+    <div id="sort" hidden><%=sort_data%></div>
+    <script>
+      function chageLangSelect() {
+        var langSelect = document.getElementById("selectbox");
+        var selectValue = langSelect.options[langSelect.selectedIndex].value;
+        if (selectValue == "asc") {
+          location.href =
+            "http://localhost:3000/search?pageInfo=1&q=<%=q%>&sort_data=asc&startdate=<%=startdate%>&findate=<%=findate%>";
+        } else if (selectValue == "desc") {
+          location.href =
+            "http://localhost:3000/search?pageInfo=1&q=<%=q%>&sort_data=desc&startdate=<%=startdate%>&findate=<%=findate%>";
+        }
+      }
 
-      <div>
-        <!-- <% let pageInfo=0 %> -->
-        <a
-          href="http://localhost:3000/search?pageInfo=<%=pageInfo-1%>&q=<%=q%>"
-        >
-          [<<]
-        </a>
-        <% if(pageInfo==1){%> <%}else{%>
-        <a
-          href="http://localhost:3000/search?pageInfo=<%=pageInfo-1%>&q=<%=q%>"
-        >
-          [<]
-        </a>
-        <%}%> 
-        <% let v = totaldata.hits.total.value/10%> 
-        <% let v2 =totaldata.hits.total.value%10%> 
-        <% for(var i=0; i < v; i++){%>
-        <a
-          href="http://localhost:3000/search?pageInfo=<%= i+1 %>&q=<%=q%>"
-          ><%= i+1 %></a
-        >
-        <%}%> <% let v1 = Math.floor(v)%> 
-        <% if(pageInfo==v1*10-10 && v2==0){%>
-        <%}else if(pageInfo==v1*10 && v2!==0){ %> 
-          <%}else{%>
-        <a
-          href="http://localhost:3000/search?pageInfo=<%=Number(pageInfo)+Number(1)%>&q=<%=q%>"
-        >
-          [>]
-        </a>
-        <%}%>
-        <a
-          href="http://localhost:3000/search?pageInfo=<%=pageInfo-1%>&q=<%=q%>"
-        >
-          [>>]
-        </a>
-      </div>
+      $(document).ready(function () {
+        var sort = document.getElementById("sort");
+        if (sort.innerHTML == "desc") {
+          $("#selectbox option:eq(0)").prop("selected", true);
+        } else if (sort.innerHTML == "asc") {
+          $("#selectbox option:eq(1)").prop("selected", true);
+        }
+      });
+    </script>
+    <script>
+      $(document).ready(function () {
+        $("#startdate").datepicker({
+          format: "yyyy-mm",
+          minViewMode: 1,
+          language: "ko",
+          autoclose: true,
+        });
+        $("#get-history").on("click", function () {
+          const dateArr = $("#date-picker").val().split("-");
+          location.href =
+            "/history?year=" + dateArr[0] + "&month=" + dateArr[1];
+        });
+      });
+    </script>
+    <script>
+      $(document).ready(function () {
+        $("#findate").datepicker({
+          format: "yyyy-mm",
+          minViewMode: 1,
+          language: "ko",
+          autoclose: true,
+        });
+        $("#get-history").on("click", function () {
+          const dateArr = $("#date-picker").val().split("-");
+          location.href =
+            "/history?year=" + dateArr[0] + "&month=" + dateArr[1];
+        });
+      });
+    </script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+      crossorigin="anonymous"
+    ></script>
 
-      <script>
-        $(document).ready(function () {
-          $("#date-picker").datepicker({
-            format: "yyyy-mm",
-            minViewMode: 1,
-            language: "ko",
-            autoclose: true,
-          });
-          $("#get-history").on("click", function () {
-            const dateArr = $("#date-picker").val().split("-");
-            location.href =
-              "/history?year=" + dateArr[0] + "&month=" + dateArr[1];
-          });
-        });
-      </script>
-      <script>
-        $(document).ready(function () {
-          $("#date-picker2").datepicker({
-            format: "yyyy-mm",
-            minViewMode: 1,
-            language: "ko",
-            autoclose: true,
-          });
-          $("#get-history").on("click", function () {
-            const dateArr = $("#date-picker").val().split("-");
-            location.href =
-              "/history?year=" + dateArr[0] + "&month=" + dateArr[1];
-          });
-        });
-      </script>
-      <script
-        src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
-        crossorigin="anonymous"
-      ></script>
-</body>
+    <script>
+      function datepick() {
+        let sd = $("#startdate").val();
+        let fd = $("#findate").val();
+        console.log(sd);
+        console.log(fd);
+        location.href =
+          "http://localhost:3000/search?pageInfo=1&q=<%=q%>&sort_data=<%=sort_data%>&startdate=" +
+          sd +
+          "&findate=" +
+          fd;
+      }
+    </script>
+  </body>
 </html>
