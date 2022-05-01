@@ -27,16 +27,15 @@ router.post("/search", async (req, res) => {
       query: {
         multi_match: {
           query: q,
-          fields: [
-            "content.ngram",
-            "content.nori",
-            "title.ngram",
-            "title.nori",
-            "reporter.ngram",
-          ],
+          fields: ["content", "title", "reporter^3"],
         },
       },
-      sort: [{ start_dttm: defaultsort }, "_score"],
+      highlight: {
+        fields: [{ "*": {} }],
+        post_tags: ["</em></strong>"],
+        pre_tags: ["<em><strong style='color:red;'>"],
+      },
+      sort: [{ _score: defaultsort }, "_score"],
       _source: ["reporter", "content", "title", "start_dttm"],
     },
   });
@@ -79,17 +78,16 @@ router.get("/search", async (req, res) => {
               {
                 multi_match: {
                   query: paramdata.q,
-                  fields: [
-                    "reporter.ngram",
-                    "title.nori",
-                    "content.nori",
-                    "content.ngram",
-                    "title.ngram",
-                  ],
+                  fields: ["reporter", "title", "content"],
                 },
               },
             ],
           },
+        },
+        highlight: {
+          fields: [{ "*": {} }],
+          post_tags: ["</em>"],
+          pre_tags: ["<em>"],
         },
         sort: [{ start_dttm: defaultsort }, "_score"],
         _source: ["reporter", "start_dttm", "title", "content"],
@@ -116,13 +114,7 @@ router.get("/search", async (req, res) => {
               {
                 multi_match: {
                   query: paramdata.q,
-                  fields: [
-                    "reporter.ngram",
-                    "title.nori",
-                    "content.nori",
-                    "content.ngram",
-                    "title.ngram",
-                  ],
+                  fields: ["reporter", "title", "content"],
                 },
               },
               {
@@ -135,6 +127,11 @@ router.get("/search", async (req, res) => {
               },
             ],
           },
+        },
+        highlight: {
+          fields: [{ "*": {} }],
+          post_tags: ["</em>"],
+          pre_tags: ["<em>"],
         },
         sort: [{ start_dttm: defaultsort }, "_score"],
         _source: ["reporter", "start_dttm", "title", "content"],

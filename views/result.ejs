@@ -63,7 +63,7 @@
         </form>
       </div>
     </section>
-    <section>
+    <section class="container">
       <div class="container" style="text-align: center; margin-top: 20px">
         <button
           class="btn btn-outline-primary"
@@ -72,27 +72,27 @@
           data-bs-target="#detailsearch"
           aria-expanded="false"
           aria-controls="detailsearch"
+
           style="width: 350px"
         >
           상세검색
         </button>
       
         <div
-          class="collapse"
+          class="collapse container"
           id="detailsearch"
-          style="text-align: center; margin-left: 50px"
+          style="text-align: center; "
         >
           <div
-            class="card card-body"
+            class="card card-body container"
             style="
               margin-top: 30px;
               width: 400px;
-              margin-left: 400px;
               text-align: center;
             "
           >
             <h6>기간별 조회</h6>
-            <div class="container" style="text-align: center; margin: auto">
+            <div class="container" style="text-align: center; margin: a;">
               <input
                 id="startdate"
                 name="startdate"
@@ -141,9 +141,16 @@
 
   <div class="container">
     <% for(var i=0; i<data.length; i++){ %>
-
-    <div><%=i+1%> 번기사</div>
     <hr>
+    <div style="font-size: 10px;">하이라이팅</div>
+    <% if(data[i].highlight.title!=null||data[i].highlight.content!=null||data[i].highlight.reporter!=null) { %>
+      <div style="font-size: 16px;">하이아리트 제목: <%-data[i].highlight.title%></div>
+      <div style="font-size: 16px;">하이라이트 내용: <%-data[i].highlight.content%></div>
+      <div style="font-size: 12px;">하이라이트 기자: <%-data[i].highlight.reporter%></div>
+      <%}else{ %>
+        <div style="font-size: 10px;">하이라이팅 결과 없음</div>
+      <%}%>
+
     <h3>타이틀 : <%=data[i]._source.title%></h3>
     <h6>기자 : <%=data[i]._source.reporter%></h6>
     <div>내용 : <%=data[i]._source.content%></div>
