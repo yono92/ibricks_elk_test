@@ -27,7 +27,7 @@ router.post("/search", async (req, res) => {
       query: {
         multi_match: {
           query: q,
-          fields: ["content", "title", "reporter^3"],
+          fields: ["content", "title", "reporter^4"],
         },
       },
       highlight: {
@@ -57,17 +57,15 @@ router.post("/search", async (req, res) => {
 
 router.get("/search", async (req, res) => {
   let paramdata = req.query;
-  console.log(paramdata);
   console.log(paramdata.startdate);
   console.log(paramdata.findate);
-  let defaultsort = "";
+  defaultsort = paramdata.sort_data;
+  console.log(paramdata.sort_data);
 
-  if (paramdata.sort_data == null) {
-    defaultsort = "desc";
-  } else {
-    defaultsort = paramdata.sort_data;
-  }
-  if ((paramdata.startdate = "" || paramdata.findate == "")) {
+  if (
+    (paramdata.startdate == "" || paramdata.findate == "") &&
+    paramdata.sort_data == "score"
+  ) {
     const a = await elasticsearch.search({
       index: "practice_ngram_nori",
       body: {
@@ -79,7 +77,7 @@ router.get("/search", async (req, res) => {
               {
                 multi_match: {
                   query: paramdata.q,
-                  fields: ["reporter^3", "title", "content"],
+                  fields: ["reporter^4", "title", "content"],
                 },
               },
             ],
@@ -88,7 +86,46 @@ router.get("/search", async (req, res) => {
         highlight: {
           fields: [{ "*": {} }],
           post_tags: ["</em></strong>"],
-          pre_tags: ["<em><strong style='red'>"],
+          pre_tags: ["<em><strong style='color:red;'>"],
+        },
+        sort: ["_score"],
+        _source: ["reporter", "start_dttm", "title", "content"],
+      },
+    });
+    res.render("result", {
+      pageInfo: paramdata.pageInfo,
+      data: a.hits.hits,
+      totaldata: a,
+      q: paramdata.q,
+      sort_data: defaultsort,
+      startdate: paramdata.startdate,
+      findate: paramdata.findate,
+    });
+  } else if (
+    (paramdata.startdate == "" || paramdata.findate == "") &&
+    paramdata.sort_data !== "score"
+  ) {
+    const a = await elasticsearch.search({
+      index: "practice_ngram_nori",
+      body: {
+        from: (paramdata.pageInfo - 1) * 10,
+        size: 10,
+        query: {
+          bool: {
+            must: [
+              {
+                multi_match: {
+                  query: paramdata.q,
+                  fields: ["reporter^4", "title", "content"],
+                },
+              },
+            ],
+          },
+        },
+        highlight: {
+          fields: [{ "*": {} }],
+          post_tags: ["</em></strong>"],
+          pre_tags: ["<em><strong style='color:red;'>"],
         },
         sort: [{ start_dttm: defaultsort }, "_score"],
         _source: ["reporter", "start_dttm", "title", "content"],
@@ -103,7 +140,8 @@ router.get("/search", async (req, res) => {
       startdate: paramdata.startdate,
       findate: paramdata.findate,
     });
-  } else {
+  } else if (paramdata.sort_data == "score") {
+    console.log("test");
     const a = await elasticsearch.search({
       index: "practice_ngram_nori",
       body: {
@@ -132,7 +170,52 @@ router.get("/search", async (req, res) => {
         highlight: {
           fields: [{ "*": {} }],
           post_tags: ["</em></strong>"],
-          pre_tags: ["<em><strong  style='red'>"],
+          pre_tags: ["<em><strong style='color:red;'>"],
+        },
+        sort: ["_score"],
+        _source: ["reporter", "start_dttm", "title", "content"],
+      },
+    });
+    res.render("result", {
+      pageInfo: paramdata.pageInfo,
+      data: a.hits.hits,
+      totaldata: a,
+      q: paramdata.q,
+      sort_data: defaultsort,
+      startdate: paramdata.startdate,
+      findate: paramdata.findate,
+    });
+  } else if (paramdata.sort_data !== "score") {
+    console.log("test");
+    const a = await elasticsearch.search({
+      index: "practice_ngram_nori",
+      body: {
+        from: (paramdata.pageInfo - 1) * 10,
+        size: 10,
+        query: {
+          bool: {
+            must: [
+              {
+                multi_match: {
+                  query: paramdata.q,
+                  fields: ["reporter^4", "title", "content"],
+                },
+              },
+              {
+                range: {
+                  start_dttm: {
+                    gte: paramdata.startdate,
+                    lte: paramdata.findate,
+                  },
+                },
+              },
+            ],
+          },
+        },
+        highlight: {
+          fields: [{ "*": {} }],
+          post_tags: ["</em></strong>"],
+          pre_tags: ["<em><strong style='color:red;'>"],
         },
         sort: [{ start_dttm: defaultsort }, "_score"],
         _source: ["reporter", "start_dttm", "title", "content"],
@@ -148,61 +231,6 @@ router.get("/search", async (req, res) => {
       findate: paramdata.findate,
     });
   }
-
-  // let paramdata = req.query;
-  // console.log(paramdata.startdate);
-  // console.log(paramdata.findate);
-  // let defaultsort = "";
-  // console.log(defaultsort.sort_data);
-  // if (paramdata.sort_data == null) {
-  //   defaultsort = "desc";
-  // } else {
-  //   defaultsort = paramdata.sort_data;
-  // }
-  // const a = await elasticsearch.search({
-  //   index: "practice_ngram_nori",
-  //   body: {
-  //     from: (paramdata.pageInfo - 1) * 10,
-  //     size: 10,
-  //     query: {
-  //       bool: {
-  //         must: [
-  //           {
-  //             multi_match: {
-  //               query: paramdata.q,
-  //               fields: [
-  //                 "reporter.ngram",
-  //                 "title.nori",
-  //                 "content.nori",
-  //                 "content.ngram",
-  //                 "title.ngram",
-  //               ],
-  //             },
-  //           },
-  //           {
-  //             range: {
-  //               start_dttm: {
-  //                 gte: paramdata.startdate,
-  //                 lte: paramdata.findate,
-  //               },
-  //             },
-  //           },
-  //         ],
-  //       },
-  //     },
-  //     sort: [{ start_dttm: defaultsort }, "_score"],
-  //     _source: ["reporter", "start_dttm", "title", "content"],
-  //   },
-  // });
-  // res.render("result", {
-  //   pageInfo: paramdata.pageInfo,
-  //   data: a.hits.hits,
-  //   totaldata: a,
-  //   q: paramdata.q,
-  //   sort_data: defaultsort,
-  //   startdate: paramdata.startdate,
-  //   findate: paramdata.findate,
-  // });
 });
 
 module.exports = router;
