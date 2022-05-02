@@ -57,10 +57,11 @@ router.post("/search", async (req, res) => {
 
 router.get("/search", async (req, res) => {
   let paramdata = req.query;
-  // console.log(paramdata.startdate);
-  // console.log(paramdata.findate);
+  console.log(paramdata);
+  console.log(paramdata.startdate);
+  console.log(paramdata.findate);
   let defaultsort = "";
-  console.log(defaultsort.sort_data);
+
   if (paramdata.sort_data == null) {
     defaultsort = "desc";
   } else {
@@ -78,7 +79,7 @@ router.get("/search", async (req, res) => {
               {
                 multi_match: {
                   query: paramdata.q,
-                  fields: ["reporter", "title", "content"],
+                  fields: ["reporter^3", "title", "content"],
                 },
               },
             ],
@@ -86,8 +87,8 @@ router.get("/search", async (req, res) => {
         },
         highlight: {
           fields: [{ "*": {} }],
-          post_tags: ["</em>"],
-          pre_tags: ["<em>"],
+          post_tags: ["</em></strong>"],
+          pre_tags: ["<em><strong style='red'>"],
         },
         sort: [{ start_dttm: defaultsort }, "_score"],
         _source: ["reporter", "start_dttm", "title", "content"],
@@ -114,7 +115,7 @@ router.get("/search", async (req, res) => {
               {
                 multi_match: {
                   query: paramdata.q,
-                  fields: ["reporter", "title", "content"],
+                  fields: ["reporter^3", "title", "content"],
                 },
               },
               {
@@ -130,8 +131,8 @@ router.get("/search", async (req, res) => {
         },
         highlight: {
           fields: [{ "*": {} }],
-          post_tags: ["</em>"],
-          pre_tags: ["<em>"],
+          post_tags: ["</em></strong>"],
+          pre_tags: ["<em><strong  style='red'>"],
         },
         sort: [{ start_dttm: defaultsort }, "_score"],
         _source: ["reporter", "start_dttm", "title", "content"],
