@@ -18,6 +18,7 @@ router.post("/search", async (req, res) => {
 
   // 통합 검색 시작
   console.log("통합 검색");
+  //솔트 초기값
   let defaultsort = "desc";
   const a = await elasticsearch.search({
     index: "practice_ngram_nori",
