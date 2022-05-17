@@ -21,7 +21,7 @@ router.post("/search", async (req, res) => {
   //솔트 초기값
   let defaultsort = "desc";
   const a = await elasticsearch.search({
-    index: "practice_ngram_nori",
+    index: "sedaily__",
     body: {
       size: 10,
       from: 0,
@@ -68,7 +68,7 @@ router.get("/search", async (req, res) => {
     paramdata.sort_data == "score"
   ) {
     const a = await elasticsearch.search({
-      index: "practice_ngram_nori",
+      index: "sedaily__",
       body: {
         from: (paramdata.pageInfo - 1) * 10,
         size: 10,
@@ -78,7 +78,7 @@ router.get("/search", async (req, res) => {
               {
                 multi_match: {
                   query: paramdata.q,
-                  fields: ["reporter^4", "title", "content"],
+                  fields: ["reproter^4", "title", "title"],
                 },
               },
             ],
@@ -107,7 +107,7 @@ router.get("/search", async (req, res) => {
     paramdata.sort_data !== "score"
   ) {
     const a = await elasticsearch.search({
-      index: "practice_ngram_nori",
+      index: "sedaily__",
       body: {
         from: (paramdata.pageInfo - 1) * 10,
         size: 10,
@@ -117,7 +117,7 @@ router.get("/search", async (req, res) => {
               {
                 multi_match: {
                   query: paramdata.q,
-                  fields: ["reporter^4", "title", "content"],
+                  fields: ["reporter^4", "title", "title"],
                 },
               },
             ],
@@ -144,7 +144,7 @@ router.get("/search", async (req, res) => {
   } else if (paramdata.sort_data == "score") {
     console.log("test");
     const a = await elasticsearch.search({
-      index: "practice_ngram_nori",
+      index: "sedaily__",
       body: {
         from: (paramdata.pageInfo - 1) * 10,
         size: 10,
@@ -154,7 +154,7 @@ router.get("/search", async (req, res) => {
               {
                 multi_match: {
                   query: paramdata.q,
-                  fields: ["reporter^3", "title", "content"],
+                  fields: ["reporter^3", "title", "title"],
                 },
               },
               {
@@ -189,7 +189,7 @@ router.get("/search", async (req, res) => {
   } else if (paramdata.sort_data !== "score") {
     console.log("test");
     const a = await elasticsearch.search({
-      index: "practice_ngram_nori",
+      index: "sedaily__",
       body: {
         from: (paramdata.pageInfo - 1) * 10,
         size: 10,
@@ -199,7 +199,7 @@ router.get("/search", async (req, res) => {
               {
                 multi_match: {
                   query: paramdata.q,
-                  fields: ["reporter^4", "title", "content"],
+                  fields: ["reproter^4", "title", "title"],
                 },
               },
               {
