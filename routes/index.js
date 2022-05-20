@@ -21,7 +21,7 @@ router.post("/search", async (req, res) => {
   //솔트 초기값
   let defaultsort = "desc";
   const a = await elasticsearch.search({
-    index: "sedaily__",
+    index: "practice_ngram_nori",
     body: {
       size: 10,
       from: 0,
